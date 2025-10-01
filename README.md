@@ -27,9 +27,12 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Endpoints
 
+```
+
 GET http://localhost:3000/users/1
 GET http://localhost:3000/users
 POST http://localhost:3000/auth/login
 POST http://localhost:3000/auth/register
 PUT http://localhost:3000/users/1
 
+```
