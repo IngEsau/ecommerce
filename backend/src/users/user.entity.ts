@@ -1,44 +1,46 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn }
- from "typeorm";
-import {hash} from 'bcrypt';
-@Entity({name:'users'})
-export class User{
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
+import { hash } from 'bcrypt';
+import { Rol } from "src/roles/rol.entity";
+@Entity({ name: 'users' })
+export class User {
+    //Esto lo genera nest.Js con TypeOrm
+    @PrimaryGeneratedColumn()
+    id: number;
 
-//Esto lo genera nest.Js con TypeOrm
+    @Column()
+    name: string;
 
-@PrimaryGeneratedColumn()
-id:number;
+    @Column()
+    lastname: string;
 
-@Column()
-name:string;
+    @Column({ unique: true })
+    email: string;
 
-@Column()
-lastname:string;
+    @Column({ unique: true })
+    phone: string;
 
-@Column({unique:true})
-email:string;
+    @Column({ nullable: true })
+    image: string;
 
-@Column({unique:true})
-phone:string;
+    @Column()
+    password: string;
 
-@Column({nullable:true})
-image:string;
+    @Column({ nullable: true })
+    notification_token: string;
 
-@Column()
-password:string;
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    created_at: Date;
 
-@Column({nullable:true})
-notification_token:string;
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    updated_at: Date;
 
-@Column({type: 'datetime',default: ()=> 'CURRENT_TIMESTAMP'})
-created_at:Date;
+    @ManyToMany(() => Rol, (rol) => rol.users)
+    @JoinTable({ name: 'user_roles' })
+    roles: Rol[];
 
-@Column({type: 'datetime',default: ()=> 'CURRENT_TIMESTAMP'})
-updated_at:Date;
-
-@BeforeInsert()
-async hashPassword(){
-    this.password=await hash(this.password,Number(process.env.HASH_SALT));
-}
+    @BeforeInsert()
+    async hashPassword() {
+        this.password = await hash(this.password, Number(process.env.HASH_SALT));
+    }
 
 }
